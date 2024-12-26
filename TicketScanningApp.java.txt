@@ -1,0 +1,148 @@
+import javafx.scene.canvas.Canvas;
+import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.control.*;
+import javafx.scene.text.Font;
+import javafx.event.ActionEvent;
+
+import javafx.application.Application;
+import javafx.scene.Scene;
+import javafx.scene.layout.Pane;
+import javafx.stage.Stage;
+
+/**
+ * Use this template to create Apps with Graphical User Interfaces.
+ *
+ * @author Dhruv Patel
+ */
+public class TicketScanningApp extends Application {
+
+    // TODO: Instance Variables for View Components and Model
+
+    private Button resetButton;
+    private Button checkButton;
+    private TextField input;
+    private Label appTitle;
+    private String validateTicket;
+    private Label textLabel;
+
+    // TODO: Private Event Handlers and Helper Methods
+
+    private static final String FILE_PATH = "codes.txt";
+
+    Table t = new Table(FILE_PATH);
+
+
+
+    /**
+     *
+     * Check value
+     *
+     * @param e  the e.
+     */
+    public void checkValue(ActionEvent e){
+
+        String str = input.getText().trim().toUpperCase();
+        if(!t.isTicketPurchased(str)) {
+            if (!t.isValid(str)) {
+                if (!t.ticketEntry(str)) {
+                    textLabel.setText(str + " is valid. You may enter.\n" + t.getSingleCellValue(t.lookup(str),3));
+                    t.entryDone(str);
+                } else {
+                    textLabel.setText("Already scanned or duplicate ticket!");
+                }
+
+            } else {
+                textLabel.setText(str + " invalid ticket!");
+            }
+
+        }else {
+            textLabel.setText("Ticket not purchased.");
+        }input.clear();
+    }
+
+
+
+
+
+    /**
+     *
+     * Do reset
+     *
+     * @param e  the e.
+     */
+    private void doReset(ActionEvent e){
+
+        t.resetTicketEntries();
+        textLabel.setText("All ticket are reset now.");
+
+    }
+
+
+
+
+
+
+    /**
+     * This is where you create your components and the model and add event
+     * handlers.
+     *
+     * @param stage The main stage
+     * @throws Exception
+     */
+    @Override
+    public void start(Stage stage) throws Exception {
+
+        Pane root = new Pane();
+        Scene scene = new Scene(root, 500, 500); // set the size here
+        stage.setTitle("Ticket Scanning App"); // set the window title here
+        stage.setScene(scene);
+
+
+
+        // TODO: Add your GUI-building code here
+
+        scene.getStylesheets().add("myStyles.css");
+        // 1. Create the model
+
+        // 2. Create the GUI components
+
+        Canvas canvas = new Canvas(500,500);
+
+        input = new TextField("");
+        resetButton = new Button("Reset");
+        checkButton = new Button("Check");
+        textLabel = new Label("Scan or check ticket");
+        appTitle = new Label("Ticket Scanning Applicatoin");
+
+        // 3. Add components to the root
+        root.getChildren().addAll(canvas,input,resetButton,checkButton,textLabel,appTitle);
+
+        // 4. Configure the components (colors, fonts, size, location)
+
+        input.relocate(150,150);
+        resetButton.relocate(270,250);
+        checkButton.relocate(120,250);
+        appTitle.relocate(90,50);
+        textLabel.relocate(20,400);
+        appTitle.setId("title");
+        textLabel.setId("textLabel");
+
+        // 5. Add Event Handlers and do final setup
+
+        checkButton.setOnAction(this::checkValue);
+        resetButton.setOnAction(this::doReset);
+
+        // 6. Show the stage
+        stage.show();
+    }
+
+    /**
+     * Make no changes here.
+     *
+     * @param args unused
+     */
+    public static void main(String[] args) {
+
+        launch(args);
+    }
+}

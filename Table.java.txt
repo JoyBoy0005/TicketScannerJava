@@ -1,0 +1,465 @@
+import java.io.*;
+import java.util.Scanner;
+
+/**
+ * This class manages anu tab delimited text file, e.g.  codes.txt
+ *
+ * @author Dave Slemon
+ * @version v100
+ */
+public class Table
+{ //class
+
+    //instance variables
+    private String tablename;
+    private int numRows;
+    private int numCols;
+    private String[][] grid;
+
+
+
+    /**
+     *
+     * Initialize the class with the name of the tab delimited text file you wish to manage.
+     *
+     * @param filename  the name of tab delimited text file.
+     */
+
+    public Table( String filename )
+    { //table
+        tablename = filename;
+        numRows=0;
+        numCols=0;
+        String s;
+        int r;
+        String[] item;
+
+
+
+        //Pass1:  Go through the text file in order to ascertain the
+        //        numRows and numCols
+        try {
+
+
+            Scanner theFile = new Scanner(new FileInputStream(new File (tablename)));
+            while ( theFile.hasNextLine() )
+            {
+                s = theFile.nextLine();
+                item = s.split("\t", 0);
+
+
+                if (item.length > numCols)
+                    numCols = item.length;
+
+                numRows++;
+
+            }
+            theFile.close();
+        }
+        catch (FileNotFoundException  e)
+        {
+            System.out.println("Table class Error 1: file not found.");
+        }
+
+
+
+        grid = new String[numRows][numCols];
+
+
+        //Pass2:  populate the grid array
+        try {
+
+            Scanner theFile = new Scanner(new FileInputStream(new File (tablename)));
+            r=0;
+            while ( theFile.hasNextLine() )
+            {
+                s = theFile.nextLine();
+                item = s.split("\t", 0);
+
+                for(int c=0; c < numCols; c++) {
+
+
+
+                    if ( item[c].length() == 0)
+                        grid[r][c] = "";
+                    else
+                        grid[r][c] = item[c];
+
+
+                }
+                r++;
+
+
+            }
+            theFile.close();
+        }
+        catch (Exception e)
+        {
+            System.out.println("Table class error 2: file not found.");
+        }
+
+
+
+
+
+    } //table
+
+
+
+
+
+    /**
+     *
+     * Display is used to get full table.
+     *
+     */
+    public void display(){
+
+        for(int i=0; i<grid.length;i++){
+            for(int y = 0; y<grid[i].length; y++){
+                System.out.print(grid[i][y] + "\t");
+            }
+            System.out.println();
+        }
+    }
+
+
+
+
+
+
+    //@return -1 if key not found
+
+    /**
+     *
+     * Lookup - to check the location.
+     *
+     * @param key  the key.
+     * @return int
+     */
+    public int lookup(String key) {
+
+        for (int r = 0; r < numRows; r++) {
+            if (key.equals(grid[r][0]))
+                return r;
+        }
+        return -1;
+    }
+
+
+
+
+
+
+
+    /**
+     *
+     * Gets the single cell value
+     *
+     * @param row  the row.
+     * @param col  the col.
+     * @return the single cell value
+     */
+    public String getSingleCellValue(int row,int col){
+
+        if(row>=0 && row<numRows)
+            if(col>=0 && col<numCols)
+                return grid[row][col];
+        return "";
+
+    }
+
+
+
+
+
+    /**
+     *
+     * Sets the single cell value
+     *
+     * @param row  the row.
+     * @param col  the col.
+     * @param newString  the new string.
+     */
+    public void setSingleCellValue(int row,int col,String newString){
+
+        if(row>=0 && row<numRows)
+            if(col>=0 && col<numCols)
+                grid[row][col] = newString;
+    }
+
+
+
+
+    /**
+     *
+     * Gets the num rows
+     *
+     * @return the num rows
+     */
+    public int getNumRows() {
+
+        return numRows;
+    }
+
+
+    /**
+     *
+     * Sets the num rows
+     *
+     * @param numRows  the num rows.
+     */
+    public void setNumRows(int numRows) {
+
+        this.numRows = numRows;
+    }
+
+
+    /**
+     *
+     * Gets the num cols
+     *
+     * @return the num cols
+     */
+    public int getNumCols() {
+
+        return numCols;
+    }
+
+
+    /**
+     *
+     * Sets the num cols
+     *
+     * @param numCols  the num cols.
+     */
+    public void setNumCols(int numCols) {
+
+        this.numCols = numCols;
+    }
+
+
+
+
+
+    /**
+     *
+     * Gets the matches
+     *
+     * @param key  the key.
+     * @return the matches
+     */
+    public String[] getMatches(String key){
+
+        String[] str = new String[numCols];
+        int rowNum = lookup(key);
+        if (rowNum == -1)
+            return str;
+
+        for(int c=0 ; c<numCols; c++)
+            str[c] = grid[rowNum][c];
+        return str;
+    }
+
+
+
+
+
+    /**
+     *
+     * Change the value.
+     *
+     * @param rc  the rc.
+     * @param cc  the cc.
+     * @return String
+     */
+    public String change(int rc, int cc){
+
+        if(rc>=0 && rc<numRows)
+            if(cc>=0 && cc<numCols)
+                return grid[rc][cc];
+        return "";
+    }
+
+
+
+
+
+
+
+
+    /**
+     *
+     * Is valid
+     *
+     * @param str  the str.
+     * @return boolean
+     */
+    public boolean isValid(String str){
+
+        for(int r = 0; r<numRows; r++){
+            if(grid[r][0].equals(str))
+                return grid[r][2].equals("y");
+        }
+        return false;
+    }
+
+
+
+
+
+
+
+
+    /**
+     *
+     * Ticket entry
+     *
+     * @param str  the str.
+     * @return boolean
+     */
+    public boolean ticketEntry(String str){
+
+        for(int r=0; r<numRows; r++){
+            if(grid[r][0].equals(str))
+                return grid[r][2].equals("Y");
+
+        }
+        return false;
+    }
+
+
+
+
+
+
+
+    /**
+     *
+     * Entry done
+     *
+     * @param str  the str.
+     */
+    public void entryDone(String str){
+
+        for(int r=0; r<numRows; r++){
+            if (grid[r][0].equals(str)) {
+                grid[r][2] = "Y";
+                break;
+            }
+        }
+        updateTxtFile();
+    }
+
+
+
+
+
+
+    /**
+     *
+     * Update txt file
+     *
+     */
+    public void updateTxtFile(){
+
+        try(FileWriter fw = new FileWriter(tablename)){
+            for(int r =0; r<numRows; r++){
+                for(int c=0; c<numCols; c++){
+                    fw.write(grid[r][c]);
+                    if (c<numCols - 1){
+                        fw.write("\t");
+                    }
+                }
+                fw.write("\n");
+            }
+
+        }
+        catch (IOException e){
+        }
+    }
+
+
+
+
+
+
+    /**
+     *
+     * Save cell
+     *
+     * @param r  the r.
+     * @param c  the c.
+     * @param saveData  the save data.
+     */
+    public void saveCell(int r,int c,String saveData){
+
+        if(r>=0 && r<numRows && c>=0 && c<numCols){
+            grid[r][c] = saveData;
+            updateTxtFile();
+        }
+    }
+
+
+
+
+
+
+
+    /**
+     *
+     * Reset ticket entries
+     *
+     */
+    public void resetTicketEntries() {
+
+        // Reset all ticket entries to "N"
+        for (int r = 0; r < numRows; r++) {
+            grid[r][2] = "N";
+        }
+        updateTxtFile();
+    }
+
+
+
+
+
+    /**
+     *
+     * Is ticket purchased
+     *
+     * @param barcode  the barcode.
+     * @return boolean
+     */
+    public boolean isTicketPurchased(String barcode) {
+
+        for (int r = 0; r < numRows; r++) {
+            if (grid[r][0].equals(barcode))
+                return grid[r][1].equals("N");
+        }
+        return false;
+    }
+
+
+
+
+
+
+
+
+    /**
+     *
+     * To string
+     *
+     * @return String
+     */
+    public String toString() {
+
+
+        return ("Table: " + tablename + "  rows = " + numRows + "  cols = " + numCols);
+    }
+
+} //class
+
+
+

@@ -1,0 +1,45 @@
+.root {
+    -fx-background-color: #f4f4f4;
+}
+
+.title {
+    -fx-text-fill: darkblue;
+    -fx-font-size: 24px;
+    -fx-font-weight: bold;
+}
+
+.title-box {
+    -fx-border-color: #dcdcdc;
+    -fx-border-width: 0 0 2 0;
+    -fx-padding: 10;
+}
+
+.label {
+    -fx-font-size: 14px;
+    -fx-text-fill: black;
+}
+
+.input {
+    -fx-font-size: 14px;
+    -fx-padding: 5px;
+    -fx-border-color: #dcdcdc;
+    -fx-border-radius: 5px;
+}
+
+.button {
+    -fx-font-size: 14px;
+    -fx-background-color: #4CAF50;
+    -fx-text-fill: white;
+    -fx-padding: 10px;
+    -fx-border-radius: 5px;
+    -fx-border-color: #388E3C;
+}
+
+.button:hover {
+    -fx-background-color: #45a049;
+}
+
+.status-label {
+    -fx-font-size: 14px;
+    -fx-padding: 5px;
+}
